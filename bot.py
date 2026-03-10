@@ -62,8 +62,8 @@ def main():
     scheduler.add_job(
         send_morning_guide,
         'cron',
-        hour=7,
-        minute=0
+        hour=22,
+        minute=30
     )
     scheduler.start()
 
