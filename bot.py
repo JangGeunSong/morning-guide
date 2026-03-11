@@ -5,6 +5,7 @@ from telegram.ext import Application, MessageHandler, filters
 from apscheduler.schedulers.background import BackgroundScheduler
 from openai import OpenAI
 import asyncio
+from pytz import timezone
 
 load_dotenv()
 
@@ -66,11 +67,12 @@ def main():
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    scheduler = BackgroundScheduler()
+    # 스케줄러 생성 시 타임존 설정 
+    scheduler = BackgroundScheduler(timezone=timezone('Asia/Seoul'))
     scheduler.add_job(
         send_morning_guide,
         'cron',
-        hour=21,
+        hour=6,
         minute=0
     )
     scheduler.start()
