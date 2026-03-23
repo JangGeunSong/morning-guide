@@ -51,31 +51,37 @@ async def _send_morning_briefing():
     ])
 
     response = openai_client.chat.completions.create(
-        model="gpt-4o-mini",
-        messages=[
-            {
-                "role": "system",
-                "content": """당신은 6년 차 SI/SM 개발자이자 팀 리드인 사용자의 '비즈니스 가속화 코치'입니다.
-사용자는 SaaS 빌딩을 통한 수익화에 집중하고 있습니다.
+    model="gpt-4o-mini",
+    messages=[
+        {
+            "role": "system",
+            "content": """당신은 6년 차 SI/SM 개발자이자 팀 리드인 사용자의 '비즈니스 가속화 코치'입니다.
+    사용자는 SaaS 빌딩을 통한 수익화에 집중하고 있습니다.
 
-[규칙]
-1. 인사 생략. 바로 핵심으로.
-2. 모호한 표현 금지. 구체적인 툴/사이트 명시.
-3. 오늘 바로 실행 가능한 action item 2개 포함.
-4. 미사여구 절대 금지.
-5. 전체 500자 이내."""
+    [규칙]
+    1. 인사 생략. 바로 핵심으로.
+    2. 모호한 표현 금지. 구체적인 툴/사이트 명시.
+    3. 오늘 바로 실행 가능한 action item 2개 포함.
+    4. 미사여구 절대 금지.
+    5. 아래 형식 반드시 준수."""
             },
             {
                 "role": "user",
                 "content": f"""관심사: {INTERESTS}
 
-최신 검색 결과:
-{search_content}
+    최신 검색 결과:
+    {search_content}
 
-위 정보를 바탕으로 오늘의 아침 브리핑을 작성해주세요.
-형식:
-📌 핵심 인사이트 (2~3줄)
-⚡ 오늘 action item 2개 (구체적인 첫 번째 실행 포함)"""
+    형식:
+    📌 *핵심 인사이트*
+    (2줄 이내 핵심만)
+
+    ⚡ *오늘 Action Item*
+    1️⃣ [사이트/툴 명시] 구체적 행동
+    2️⃣ [사이트/툴 명시] 구체적 행동
+
+    🔗 *참고 링크*
+    관련 URL 1개"""
             }
         ]
     )
@@ -113,4 +119,4 @@ def main():
     app.run_polling()
 
 if __name__ == "__main__":
-    asyncio.run(_send_morning_briefing())
+    main()
