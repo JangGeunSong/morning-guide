@@ -37,18 +37,21 @@ def send_evening_check():
 
 async def _send_morning_briefing():
     bot = Bot(token=TELEGRAM_TOKEN)
+    try:
+        # Tavily로 최신 정보 검색
+        search_result = tavily_client.search(
+            query="SaaS revenue growth first customer acquisition 2025",
+            search_depth="advanced",
+            max_results=3
+        )
 
-    # Tavily로 최신 정보 검색
-    search_result = tavily_client.search(
-        query="SaaS revenue growth first customer acquisition 2025",
-        search_depth="advanced",
-        max_results=3
-    )
-
-    search_content = "\n".join([
-        f"- {r['title']}: {r['content'][:200]}"
-        for r in search_result['results']
-    ])
+        search_content = "\n".join([
+            f"- {r['title']}: {r['content'][:200]}"
+            for r in search_result['results']
+        ])
+    except Exception as e:
+        print(f"Tavily 검색 실패: {e}")
+        search_content = "최신 검색 결과를 가져오지 못했습니다. 기존 지식 기반으로 브리핑을 작성합니다."
 
     response = openai_client.chat.completions.create(
     model="gpt-4o-mini",
