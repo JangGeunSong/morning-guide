@@ -7,6 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from openai import OpenAI
 from tavily import TavilyClient
 from pytz import timezone
+from telegram.ext import CommandHandler
 
 load_dotenv()
 
@@ -25,6 +26,10 @@ async def handle_message(update, context):
     chat_id = str(update.message.chat_id)
     print(f"Chat ID: {chat_id}")
     await update.message.reply_text(f"✅ 메시지 수신: {text}")
+
+async def handle_briefing_command(update, context):
+    await update.message.reply_text("브리핑 생성 중...")
+    await _send_morning_briefing()
 
 def send_morning_briefing():
     asyncio.run(_send_morning_briefing())
@@ -105,6 +110,8 @@ async def _send_evening_check():
 def main():
     app = Application.builder().token(TELEGRAM_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+    app.add_handler(CommandHandler("briefing", handle_briefing_command))
 
     kst = timezone('Asia/Seoul')
     scheduler = BackgroundScheduler(timezone=kst)
